@@ -132,7 +132,7 @@ setInterval(function () {
         displayQuestion(questionIndex);
         userAnswer = -2;
     }
-    if (userAnswer == -2 && time <= 0) {
+    if (userAnswer === -2 && time <= 0) {
         displayAnswer(questionIndex, userAnswer);
         questionIndex++;
         if (questionIndex === QUESTIONS.length) { // no more questions
@@ -141,7 +141,7 @@ setInterval(function () {
             userAnswer = -1;
         }
     }
-    if (userAnswer == -3 && time <= 0) {
+    if (userAnswer === -3 && time <= 0) {
         restartGame();
         userAnswer = -10;
     }
