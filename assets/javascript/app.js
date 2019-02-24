@@ -1,3 +1,12 @@
+var questionIndex = 0;
+var correctAnswers = 0;
+const TIMEOUT_QUESTION = 6; // seconds
+const TIMEOUT_ANSWER = 3; // seconds
+var time = 0;
+var timerOn = false;
+var timerMessage = "";
+var userAnswer = -10;
+
 const QUESTIONS = [
     {
         question: "Who is in charge of the executive branch?",
@@ -31,14 +40,6 @@ const QUESTIONS = [
     },
 ];
 
-var questionIndex = 0;
-var correctAnswers = 0;
-const TIMEOUT_QUESTION = 5; // seconds
-const TIMEOUT_ANSWER = 2; // seconds
-var time = 0;
-var timerOn = false;
-var timerMessage = "";
-
 function startGame() {
     $("#question-box").text("Are you ready to start?");
     var button = $("<button>").attr({ class: "btn btn-outline-primary btn-lg m-1", "button-value": -1 }).text("New Quiz");
@@ -49,8 +50,10 @@ function startGame() {
         if (timerOn) {
             if (timerMessage === "question") {
                 $("#instruction-timer").text(`Time remaining ${time} seconds`);
-            } else { // timerMessage === "answer"
+            } else if (timerMessage === "answer") {
                 $("#instruction-timer").text(`Next question in ${time} seconds`);
+            } else { // timerMessage === "last answer";
+                $("#instruction-timer").text(`Summary in ${time} seconds`);
             }
         } else {
             $("#instruction-timer").empty();
@@ -71,7 +74,6 @@ function displayQuestion(questionIndex) {
     timerOn = true;
 }
 
-// userAnswer = -1 (if first question or timeout) | 0 | 1 | 2 | 3
 function displayAnswer(questionIndex, userAnswer) {
     var correctAnswer = QUESTIONS[questionIndex].correctAnswer;
     $("button").each(function () {
@@ -87,11 +89,17 @@ function displayAnswer(questionIndex, userAnswer) {
     if (userAnswer === correctAnswer) {
         correctAnswers++;
         $("#instruction-box").text(`Question ${questionIndex + 1}. Correct!`);
+    } else if (userAnswer === -2) {
+        $("#instruction-box").text(`Question ${questionIndex + 1}. Timeout!`);
     } else {
         $("#instruction-box").text(`Question ${questionIndex + 1}. Incorrect!`);
     }
     time = TIMEOUT_ANSWER;
-    timerMessage = "answer";
+    if (questionIndex === QUESTIONS.length - 1) {
+        timerMessage = "last answer";
+    } else {
+        timerMessage = "answer";
+    }
     timerOn = true;
 }
 
@@ -100,24 +108,50 @@ function restartGame() {
     var button = $("<button>").attr({ class: "btn btn-outline-primary btn-lg m-1", "button-value": -1 }).text("New Quiz");
     $("#buttons-box").empty().append(button);
     $("#instruction-box").text(`You answered ${correctAnswers} of ${QUESTIONS.length} questions correctly!`);
-    this.questionIndex = 0;
-    this.correctAnswers = 0;
+    questionIndex = 0;
+    correctAnswers = 0;
     timerOn = false;
 }
 
 startGame();
 
 $(document).on("click", "button", function () {
-    var userAnswer = parseInt($(this).attr("button-value"));
-
-    if (userAnswer === -1) {
-        displayQuestion(questionIndex);
-
-    } else { // userAnswer === 0 | 1 | 2
-        displayAnswer(questionIndex, userAnswer);
-
-    }
-
-    restartGame();
-
+    userAnswer = parseInt($(this).attr("button-value"));
 });
+
+// State of the game
+// -----------------
+// userAnswer =
+// -10 - no action
+// -1 - display the first question after restart or next question after timeout
+// -2 - waiting for the user answer or timeout
+// -3 - restart
+// 0 | 1 | 2 | 3 - actual user answers
+setInterval(function () {
+    if (userAnswer === -1 && time <= 0) {
+        displayQuestion(questionIndex);
+        userAnswer = -2;
+    }
+    if (userAnswer == -2 && time <= 0) {
+        displayAnswer(questionIndex, userAnswer);
+        questionIndex++;
+        if (questionIndex === QUESTIONS.length) { // no more questions
+            userAnswer = -3;
+        } else {
+            userAnswer = -1;
+        }
+    }
+    if (userAnswer == -3 && time <= 0) {
+        restartGame();
+        userAnswer = -10;
+    }
+    if (userAnswer > -1) {
+        displayAnswer(questionIndex, userAnswer);
+        questionIndex++;
+        if (questionIndex === QUESTIONS.length) { // no more questions
+            userAnswer = -3;
+        } else {
+            userAnswer = -1;
+        }
+    }
+}, 300);
