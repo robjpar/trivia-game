@@ -1,11 +1,11 @@
 var questionIndex = 0;
 var correctAnswers = 0;
-const TIMEOUT_QUESTION = 6; // seconds
-const TIMEOUT_ANSWER = 3; // seconds
-var time = 0;
+const TIMEOUT_QUESTION = 8; // seconds
+const TIMEOUT_ANSWER = 4; // seconds
+var time = 0; // clock
 var timerOn = false;
 var timerMessage = "";
-var userAnswer = -10;
+var userAnswer = -10; // state of the game
 
 const QUESTIONS = [
     {
@@ -79,7 +79,8 @@ const QUESTIONS = [
         correctAnswer: 0,
     },
     {
-        question: "The idea of self-government is in the first three words of the Constitution. What are these words?",
+        question: "The idea of self-government is in the first three words of the Constitution. \
+        What are these words?",
         answers: [
             "Life, Liberty, Happiness",
             "Be it Resolved",
@@ -89,7 +90,8 @@ const QUESTIONS = [
         correctAnswer: 2,
     },
     {
-        question: "If both the President and the Vice President can no longer serve, who becomes President?",
+        question: "If both the President and the Vice President can no longer serve, who becomes \
+        President?",
         answers: [
             "The Chief Justice",
             "Secretary of the Treasury",
@@ -112,9 +114,13 @@ const QUESTIONS = [
 
 function startGame() {
     $("#question-box").text("Are you ready to start?");
-    var button = $("<button>").attr({ class: "btn btn-outline-primary btn-lg m-1", "button-value": -1 }).text("New Quiz");
+    var button = $("<button>").attr({
+        class: "btn btn-outline-primary btn-lg m-1",
+        "button-value": -1
+    }).text("New Quiz");
     $("#buttons-box").empty().append(button);
-    $("#instruction-box").text(`There are ${QUESTIONS.length} questions. You have ${TIMEOUT_QUESTION} seconds to pick an answer.`);
+    $("#instruction-box").text(`There are ${QUESTIONS.length} questions. You have \
+    ${TIMEOUT_QUESTION} seconds to pick an answer.`);
     setInterval(function () {
         time--;
         if (timerOn) {
@@ -135,7 +141,10 @@ function displayQuestion(questionIndex) {
     $("#question-box").text(QUESTIONS[questionIndex].question);
     $("#buttons-box").empty();
     QUESTIONS[questionIndex].answers.forEach(function (answer, index) {
-        var button = $("<button>").attr({ class: "btn btn-outline-primary btn-lg m-1", "button-value": index }).text("New Quiz").text(answer);
+        var button = $("<button>").attr({
+            class: "btn btn-outline-primary btn-lg m-1",
+            "button-value": index
+        }).text("New Quiz").text(answer);
         $("#buttons-box").append(button);
     });
     $("#instruction-box").text(`Question ${questionIndex + 1}. Pick the correct answer.`);
@@ -175,9 +184,13 @@ function displayAnswer(questionIndex, userAnswer) {
 
 function restartGame() {
     $("#question-box").text("Play again?");
-    var button = $("<button>").attr({ class: "btn btn-outline-primary btn-lg m-1", "button-value": -1 }).text("New Quiz");
+    var button = $("<button>").attr({
+        class: "btn btn-outline-primary btn-lg m-1",
+        "button-value": -1
+    }).text("New Quiz");
     $("#buttons-box").empty().append(button);
-    $("#instruction-box").text(`You answered ${correctAnswers} of ${QUESTIONS.length} questions correctly!`);
+    $("#instruction-box").text(`You answered ${correctAnswers} of ${QUESTIONS.length} questions \
+    correctly!`);
     questionIndex = 0;
     correctAnswers = 0;
     timerOn = false;
