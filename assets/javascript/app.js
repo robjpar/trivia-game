@@ -38,6 +38,76 @@ const QUESTIONS = [
         ],
         correctAnswer: 2,
     },
+    {
+        question: "Who vetoes bills?",
+        answers: [
+            "Congress",
+            "The President",
+            "The Vice President",
+            "Senators"
+        ],
+        correctAnswer: 1,
+    },
+    {
+        question: "What are the two major political parties in the United States?",
+        answers: [
+            "Liberty and Justice",
+            "Law and Order",
+            "Democratic and Republican",
+            "Checks and Balances"
+        ],
+        correctAnswer: 2,
+    },
+    {
+        question: "When was the Declaration of Independence adopted?",
+        answers: [
+            "December 7, 1941",
+            "January 1, 1800",
+            "May 25, 1787",
+            "July 4, 1776"
+        ],
+        correctAnswer: 3,
+    },
+    {
+        question: "Why does the flag have 50 stars?",
+        answers: [
+            "One for each state",
+            "One for each Senator",
+            "One for each amendment",
+            "One for each original colony"
+        ],
+        correctAnswer: 0,
+    },
+    {
+        question: "The idea of self-government is in the first three words of the Constitution. What are these words?",
+        answers: [
+            "Life, Liberty, Happiness",
+            "Be it Resolved",
+            "We the People",
+            "Make no law"
+        ],
+        correctAnswer: 2,
+    },
+    {
+        question: "If both the President and the Vice President can no longer serve, who becomes President?",
+        answers: [
+            "The Chief Justice",
+            "Secretary of the Treasury",
+            "Postmaster General",
+            "The Speaker of the House"
+        ],
+        correctAnswer: 3,
+    },
+    {
+        question: "How many justices are on the Supreme Court?",
+        answers: [
+            "5",
+            "7",
+            "9",
+            "11"
+        ],
+        correctAnswer: 2,
+    },
 ];
 
 function startGame() {
