@@ -2,7 +2,7 @@ var questionIndex = 0;
 var correctAnswers = 0;
 const TIMEOUT_QUESTION = 8; // seconds
 const TIMEOUT_ANSWER = 4; // seconds
-var time = 0; // clock
+var time = 0; // timer
 var timerOn = false;
 var timerMessage = "";
 var userAnswer = -10; // state of the game
@@ -113,7 +113,7 @@ const QUESTIONS = [
 ];
 
 function startGame() {
-    $("#question-box").text("Are you ready to start?");
+    $("#question-box").text("Ready to start?");
     var button = $("<button>").attr({
         class: "btn btn-outline-primary btn-lg m-1",
         "button-value": -1
@@ -121,6 +121,9 @@ function startGame() {
     $("#buttons-box").empty().append(button);
     $("#instruction-box").text(`There are ${QUESTIONS.length} questions. You have \
     ${TIMEOUT_QUESTION} seconds to pick an answer.`);
+}
+
+function startTimer() {
     setInterval(function () {
         time--;
         if (timerOn) {
@@ -148,6 +151,7 @@ function displayQuestion(questionIndex) {
         $("#buttons-box").append(button);
     });
     $("#instruction-box").text(`Question ${questionIndex + 1}. Pick the correct answer.`);
+    // Timer setup
     time = TIMEOUT_QUESTION;
     timerMessage = "question";
     timerOn = true;
@@ -173,6 +177,7 @@ function displayAnswer(questionIndex, userAnswer) {
     } else {
         $("#instruction-box").text(`Question ${questionIndex + 1}. Incorrect!`);
     }
+    // Timer setup
     time = TIMEOUT_ANSWER;
     if (questionIndex === QUESTIONS.length - 1) {
         timerMessage = "last answer";
@@ -193,10 +198,12 @@ function restartGame() {
     correctly!`);
     questionIndex = 0;
     correctAnswers = 0;
+    // Timer setup
     timerOn = false;
 }
 
 startGame();
+startTimer();
 
 $(document).on("click", "button", function () {
     userAnswer = parseInt($(this).attr("button-value"));
@@ -205,36 +212,36 @@ $(document).on("click", "button", function () {
 // State of the game
 // -----------------
 // userAnswer =
-// -10 - no action
-// -1 - display the first question after restart or next question after timeout
-// -2 - waiting for the user answer or timeout
+// -10 - idle until the 'new quiz' button clicked 
+// -1 - display the first question after button clicked or next question after timeout
+// -2 - waiting for the user's answer or timeout
 // -3 - restart
-// 0 | 1 | 2 | 3 - actual user answers
+// 0 | 1 | 2 | 3 - actual user's answers
 setInterval(function () {
     if (userAnswer === -1 && time <= 0) {
         displayQuestion(questionIndex);
-        userAnswer = -2;
+        userAnswer = -2; // wait for user's answer or timeout
     }
     if (userAnswer === -2 && time <= 0) {
         displayAnswer(questionIndex, userAnswer);
         questionIndex++;
         if (questionIndex === QUESTIONS.length) { // no more questions
-            userAnswer = -3;
+            userAnswer = -3; // restart
         } else {
-            userAnswer = -1;
+            userAnswer = -1; // go to the next question
         }
     }
     if (userAnswer === -3 && time <= 0) {
         restartGame();
-        userAnswer = -10;
+        userAnswer = -10; // wait fot the 'new quiz' button clicked
     }
     if (userAnswer > -1) {
         displayAnswer(questionIndex, userAnswer);
         questionIndex++;
         if (questionIndex === QUESTIONS.length) { // no more questions
-            userAnswer = -3;
+            userAnswer = -3; // restart
         } else {
-            userAnswer = -1;
+            userAnswer = -1; // go to the next question
         }
     }
 }, 300);
